@@ -2,7 +2,8 @@
 
 /*
 Plugin Name: Change User Notification (Email)
-Description: Changes the default user emails, based upon https://oikos.digital/2016/11/modifying-new-user-notification-emails-gravity-forms-user-registration-add
+Description: Changes the default user emails (needs Polylang plugin!)
+Based upon: https://oikos.digital/2016/11/modifying-new-user-notification-emails-gravity-forms-user-registration-add
 Version: 1.0
 Author: E-VANCE / Henning Orth
 Author URI: https://www.e-vance.net
@@ -23,6 +24,7 @@ if ( ! function_exists( 'gf_new_user_notification' ) ) {
 	 * @param string $notify         Whether the admin should be notified.
 	 *                               If 'admin', only the admin. If 'both', user and admin.
 	 */
+
 	function gf_new_user_notification( $user_id, $plaintext_pass = '', $notify = '' ) {
 		$user = get_userdata( $user_id );
 
@@ -34,7 +36,7 @@ if ( ! function_exists( 'gf_new_user_notification' ) ) {
 		$message .= sprintf( __( 'Username: %s' ), $user->user_login ) . "\r\n\r\n";
 		$message .= sprintf( __( 'Email: %s' ), $user->user_email ) . "\r\n";
 
-		$result = @wp_mail( get_option( 'admin_email' ), sprintf( __( '%s | New User Registration' ), $blogname ), $message );
+		$result = @wp_mail( get_option( 'admin_email' ), sprintf( __( '[%s] New User Registration' ), $blogname ), $message );
 		gf_user_registration()->log_wp_mail( $result, 'admin' );
 
 		if ( 'admin' === $notify || ( empty( $plaintext_pass ) && empty( $notify ) ) ) {
@@ -54,7 +56,8 @@ if ( ! function_exists( 'gf_new_user_notification' ) ) {
 		// $message .= wp_login_url() . "\r\n";
 		$message .= home_url() . "\r\n";
 
-		$result = wp_mail( $user->user_email, sprintf( __( '%s | Your username and password info' ), $blogname ), $message );
+		$result = wp_mail( $user->user_email, sprintf( __( '[%s] Your username and password info' ), $blogname ), $message );
 		gf_user_registration()->log_wp_mail( $result, 'user' );
 	}
 }
+
